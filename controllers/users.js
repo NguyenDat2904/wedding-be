@@ -1,5 +1,7 @@
 const modelUsers=require('../models/users')
 const validate =require('../helps/validate')
+const nodemailer = require('nodemailer');
+require('dotenv').config()
 const CreateUsers=async(req,res)=>{
     try {
         const {name,phone,email,guestOf,desc} =req.body
@@ -108,4 +110,26 @@ const GetUsers= async(req,res)=>{
         })
     }
 }
-module.exports={CreateUsers,UpdateUsers,DeleteUser,GetUsers}
+const SendEmailClient=async(req,res)=>{
+    const { email } = req.body;
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: process.env.USER_EMAIL,
+            pass: process.env.PASSWORD_EMAIL,
+        },
+    });
+    const mailOptions = {
+        from: `${process.env.USER_EMAIL}`, // sender address
+        to: `${email}`, // list of receivers
+        subject: 'Set your new Atlassian password', // Subject line
+        text: 'Password retrieval', // plaintext body
+        html: `
+               <div>hello
+               </div>
+        
+        `, // html body
+    };
+    transporter.sendMail(mailOptions);
+}
+module.exports={CreateUsers,UpdateUsers,DeleteUser,GetUsers,SendEmailClient}

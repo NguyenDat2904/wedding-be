@@ -5,13 +5,14 @@ const modelUsers= new schema({
     name:{type:String},
     phone:{type:String},
     email:{type:String},
-    guestOf:{type:String},
+    family:{type:String,enum:['groom','bride']},
     isConfirm:{type:Boolean},
     numberOfPeople:{type:Number},
     desc:{type:String},
-    userName:{type:String},
-    passWord:{type:String},
-    role:{type: String, default: 'Member' }
+    luckyMoney:{type:String},
+    isInvitation:{type:Boolean},
+    relationship :{ type: String, enum: ['friend', 'colleague', 'relatives']},
+    commonName:{type:String}
 },
 { timestamps: true }
 )

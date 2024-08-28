@@ -10,6 +10,12 @@ const CreateUsers=async(req,res)=>{
                 message:'Bạn vui lòng điền đầy đủ thông tin'
             })
         }
+        const confirmEmail=await validate({phone:phone})
+        if(!confirmEmail){
+            return res.status(300).json({
+                message:'Bạn vui lòng điền đúng định dạng số điện thoại'
+            })
+        }
         const checkPhone= await modelUsers.findOne({phone:phone})
         if(checkPhone){
             return res.status(300).json({
@@ -41,7 +47,8 @@ const CreateUsers=async(req,res)=>{
 }
 const UpdateUsers= async(req,res)=>{
     try {
-        const {_id,name,phone,email,family,isConfirm,
+        const {_id}=req.params
+        const {name,phone,email,family,isConfirm,
             numberOfPeople, desc,luckyMoney,
             isInvitation, relationship, commonName}= req.body
         if(!_id||!name||!phone||!email||!family||
@@ -55,6 +62,12 @@ const UpdateUsers= async(req,res)=>{
         if(!confirmEmail){
             return res.status(300).json({
                 message:'Bạn vui lòng điền đúng định dạng email hoặc số điện thoại'
+            })
+        }
+        const checkPhone= await modelUsers.findOne({phone:phone})
+        if(checkPhone){
+            return res.status(300).json({
+                message:'Số điện thoại đã tồn tại'
             })
         }
         const update= await  modelUsers.findByIdAndUpdate(_id,{

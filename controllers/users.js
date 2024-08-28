@@ -44,9 +44,11 @@ const UpdateUsers= async(req,res)=>{
         const {_id,name,phone,email,family,isConfirm,
             numberOfPeople, desc,luckyMoney,
             isInvitation, relationship, commonName}= req.body
-        if(!_id){
+        if(!_id||!name||!phone||!email||!family||
+            !numberOfPeople,!luckyMoney||
+            !relationship|| !commonName){
             return res.status(300).json({
-                message:'chưa có id'
+                message:'Bạn vui lòng điền đầy đủ thông tin hoặc chưa có id'
             })
         }
         const confirmEmail=await validate({email:email,phone:phone})
@@ -90,10 +92,15 @@ const DeleteUser = async(req,res)=>{
 }
 const GetUsers= async(req,res)=>{
     try {
-        const skipPage = parseInt(req.query.page) || 1;
+        const skipPage = parseInt(req.query.skip) || 1;
         const limitPage = parseInt(req.query.limit) || 25;
         const search = req.query.search || '';
-        const lengthUsers = await modelUsers.find({})
+        const lengthUsers = await modelUsers.aggregate([
+            { $match:{
+                  $or: [
+                 { phone: { $regex: search,$options: 'i' } },
+                 { name: { $regex: search,$options: 'i' } },],
+             }}])
         const totalPage = Math.ceil(lengthUsers.length / limitPage);
         const dataUser= await modelUsers.aggregate([
            { $match:{
@@ -101,10 +108,11 @@ const GetUsers= async(req,res)=>{
                 { phone: { $regex: search,$options: 'i' } },
                 { name: { $regex: search,$options: 'i' } },],
             }},
-            { $skip: (skipPage - 1) * limitPage },
+            {$sort:{ createdAt: -1 }},
+            { $skip: ((skipPage - 1) * limitPage) },
             { $limit: limitPage },
     ])
-        
+
         return res.status(200).json({
             data:dataUser,
             totalPage:totalPage

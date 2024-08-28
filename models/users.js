@@ -9,7 +9,7 @@ const modelUsers= new schema({
     isConfirm:{type:Boolean},
     numberOfPeople:{type:Number},
     desc:{type:String},
-    luckyMoney:{type:String},
+    luckyMoney:{type:Number},
     isInvitation:{type:Boolean},
     relationship :{ type: String, enum: ['friend', 'colleague', 'relatives']},
     commonName:{type:String}

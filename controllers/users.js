@@ -1,11 +1,12 @@
 const modelUsers=require('../models/users')
 const validate =require('../helps/validate')
 const nodemailer = require('nodemailer');
+const checkEmailAndPhone= require('../helps/checkEmailAnhPhone')
 require('dotenv').config()
 const CreateUsers=async(req,res)=>{
     try {
         const {name,phone,isConfirm,family, desc, relationship, commonName} =req.body
-        if(!name||!phone||!isConfirm||!family||!desc||!relationship||!commonName){
+        if(!name||!phone||!family||!desc||!relationship||!commonName){
             return res.status(300).json({
                 message:'Bạn vui lòng điền đầy đủ thông tin'
             })
@@ -16,8 +17,8 @@ const CreateUsers=async(req,res)=>{
                 message:'Bạn vui lòng điền đúng định dạng số điện thoại'
             })
         }
-        const checkPhone= await modelUsers.findOne({phone:phone})
-        if(checkPhone){
+        const checkPhone= await checkEmailAndPhone({phone:phone})
+        if(!checkPhone){
             return res.status(300).json({
                 message:'Số điện thoại đã tồn tại'
             })
@@ -64,10 +65,18 @@ const UpdateUsers= async(req,res)=>{
                 message:'Bạn vui lòng điền đúng định dạng email hoặc số điện thoại'
             })
         }
-        const checkPhone= await modelUsers.findOne({phone:phone})
-        if(checkPhone){
+        const detailUser=await modelUsers.findById(_id)
+        const checkEmail= await checkEmailAndPhone({email:email})
+        if(!checkEmail&&detailUser.email!==email){
             return res.status(300).json({
-                message:'Số điện thoại đã tồn tại'
+                message:'Email đã tồn tại'
+            })
+        }
+        const checkPhone= await checkEmailAndPhone({phone:phone})
+        if(!checkPhone&&detailUser.phone!==phone)
+        {
+            return res.status(300).json({
+                message:' Số điện thoại đã tồn tại'
             })
         }
         const update= await  modelUsers.findByIdAndUpdate(_id,{
@@ -138,6 +147,7 @@ const GetUsers= async(req,res)=>{
 }
 const SendEmailClient=async(req,res)=>{
     const { email } = req.body;
+    const detailUser= await modelUsers.findOne({email:email})
     const transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
@@ -148,8 +158,7 @@ const SendEmailClient=async(req,res)=>{
     const mailOptions = {
         from: `${process.env.USER_EMAIL}`, // sender address
         to: `${email}`, // list of receivers
-        subject: 'Set your new Atlassian password', // Subject line
-        text: 'Password retrieval', // plaintext body
+        subject: 'Thư cảm ơn đã đên tham dự', // Subject line
         html: `
               <!DOCTYPE html>
 <html lang="en">
@@ -309,7 +318,7 @@ const SendEmailClient=async(req,res)=>{
             <p>Chúng tôi rất vui mừng được chào đón bạn đến chung vui trong ngày trọng đại này.</p>
         </div>
         <div class="email-content">
-            <p>Kính gửi <strong>[Tên khách]</strong>,</p>
+            <p>Kính gửi <strong>${detailUser.name}</strong>,</p>
             <p>
                 Chúng tôi rất vui mừng khi nhận được xác nhận tham dự tiệc cưới từ bạn. Sự hiện diện của bạn sẽ là niềm vinh dự lớn cho chúng tôi trong ngày trọng đại này.
             </p>
@@ -362,9 +371,18 @@ const SendEmailClient=async(req,res)=>{
         
         `, // html body
     };
-    transporter.sendMail(mailOptions);
-    return res.status(200).json({
-        message:"successfully"
-    })
+    transporter.sendMail(mailOptions, function (error, response) {
+        if (error) {
+            console.log(error);
+            return res.status(404).json({
+                message: 'Error when sending email',
+            });
+        } else {
+            console.log('Message sent: ' + response.response);
+            return res.status(200).json({
+                message: 'Email has been sent',
+            });
+        }
+    });
 }
 module.exports={CreateUsers,UpdateUsers,DeleteUser,GetUsers,SendEmailClient}

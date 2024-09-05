@@ -31,7 +31,8 @@ const CreateComment=async(req,res)=>{
 }
 const UpdateComments= async(req,res)=>{
     try {
-        const {name,email,wish,_id}= req.body
+        const {_id}= req.params
+        const {name,email,wish}= req.body
         if(!name||!email||!wish||!_id){
             return res.status(300).json({
                 message:'Bạn vui lòng điền đầy đủ thông tin hoặc chưa có id'
@@ -40,7 +41,7 @@ const UpdateComments= async(req,res)=>{
         const confirmEmail=await validate({email:email})
         if(!confirmEmail){
             return res.status(300).json({
-                message:'Bạn vui lòng điền đúng định dạng email hoặc số điện thoại'
+                message:'Bạn vui lòng điền đúng định dạng email'
             })
         }
         const update= await  modelComment.findByIdAndUpdate(_id,{name,email,wish},{new:true})
@@ -74,7 +75,7 @@ const DeleteComments = async(req,res)=>{
 }
 const GetComments= async(req,res)=>{
     try {
-        const skipPage = parseInt(req.query.page) || 1;
+        const skipPage = parseInt(req.query.skip) || 1;
         const limitPage = parseInt(req.query.limit) || 25;
         const search = req.query.search || '';
         const lengthUsers = await modelComment.find({})
@@ -82,7 +83,6 @@ const GetComments= async(req,res)=>{
         const dataUser= await modelComment.aggregate([
            { $match:{
                  $or: [
-                { phone: { $regex: search,$options: 'i' } },
                 { name: { $regex: search,$options: 'i' } },],
             }},
             { $skip: (skipPage - 1) * limitPage },

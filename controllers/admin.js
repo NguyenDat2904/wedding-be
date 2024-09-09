@@ -11,7 +11,7 @@ const LoginAdmin=async(req,res)=>{
         }
         const hashPassword= await modelUSers.findOne({userName:userName})
         const comparePassword= await bcrypt.compare(passWord,hashPassword.passWord)
-        const token = await asignToken({name:hashPassword.name,_id:hashPassword._id},"5h")
+        const token = await asignToken({name:hashPassword.name,_id:hashPassword._id},"1h")
         if(hashPassword===null)
             {
                 return res.status(300).json({

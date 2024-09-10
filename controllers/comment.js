@@ -86,6 +86,7 @@ const GetComments= async(req,res)=>{
                  $or: [
                 { name: { $regex: search,$options: 'i' } },],
             }},
+            {$sort:{createdAt:-1}},
             { $skip: (skipPage - 1) * limitPage },
             { $limit: limitPage },
     ])

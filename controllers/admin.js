@@ -33,21 +33,32 @@ const LoginAdmin=async(req,res)=>{
         })
     }
 }
-const createAdmin=async(req,res)=>{
+const createAdmin = async (req, res) => {
     try {
-        const {name,userName,passWord}=req.body
-        const salt = bcrypt.genSaltSync(10);
-        const hashPassWord = bcrypt.hashSync(passWord, salt);
-        const newAdmin=await modelUSers.insertMany({
-            name,userName,passWord:hashPassWord
-        })
+        const { name, userName, passWord } = req.body;
+        
+        // Mã hóa mật khẩu bằng bcrypt (bất đồng bộ)
+        const salt = await bcrypt.genSalt(10);
+        const hashPassWord = await bcrypt.hash(passWord, salt);
+
+        // Tạo admin mới
+        const newAdmin = await modelUSers.create({
+            name,
+            userName,
+            passWord: hashPassWord
+        });
+
+        // Trả về phản hồi thành công
         return res.status(200).json({
-            data:newAdmin
-        })
+            data: newAdmin
+        });
+
     } catch (error) {
+        // Trả về lỗi nếu có vấn đề xảy ra
         return res.status(500).json({
-            message:error
-        })
+            message: error.message || "Internal Server Error"
+        });
     }
 }
+
 module.exports={LoginAdmin,createAdmin}

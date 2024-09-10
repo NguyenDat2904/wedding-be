@@ -19,9 +19,10 @@ const CreateComment=async(req,res)=>{
             email,
             wish
         })
+        const [singleComment] = [...newComment]
         return res.status(200).json({
             message:'successfully',
-            data:newComment
+            data:singleComment
         })
     } catch (error) {
         return res.status(500).json({

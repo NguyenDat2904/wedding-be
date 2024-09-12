@@ -31,7 +31,7 @@ const CreateUsers=async(req,res)=>{
             isConfirm,
             numberOfPeople:null,
             desc,
-            luckyMoney:'',
+            luckyMoney:null,
             isInvitation:false,
             relationship,
             commonName

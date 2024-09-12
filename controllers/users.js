@@ -6,26 +6,14 @@ require('dotenv').config()
 const CreateUsers=async(req,res)=>{
     try {
         const {name,phone,isConfirm,family, desc, relationship, commonName} =req.body
-        if(!name||!phone||!family||!desc||!relationship||!commonName){
+        if(!name||!family||!desc||!relationship||!commonName){
             return res.status(300).json({
                 message:'Bạn vui lòng điền đầy đủ thông tin'
             })
         }
-        const confirmEmail=await validate({phone:phone})
-        if(!confirmEmail){
-            return res.status(300).json({
-                message:'Bạn vui lòng điền đúng định dạng số điện thoại'
-            })
-        }
-        const checkPhone= await checkEmailAndPhone({phone:phone})
-        if(!checkPhone){
-            return res.status(300).json({
-                message:'Số điện thoại đã tồn tại'
-            })
-        }
         const newUser= await modelUsers.insertMany({
             name,
-            phone,
+            phone : '',
             email:'',
             family,
             isConfirm,

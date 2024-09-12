@@ -3,15 +3,9 @@ const modelComment= require('../models/comment')
 const CreateComment=async(req,res)=>{
     try {
         const {name,email,wish}=req.body
-        if(!name||!email||!wish){
+        if(!name||!wish){
             return res.status(300).json({
                 message:'Bạn vui lòng điền đầy đủ thông tin'
-            })
-        }
-        const confirmEmail= await validate({email:email})
-        if(!confirmEmail){
-            return res.status(300).json({
-                message:'Bạn vui lòng điền đúng định dạng email hoặc số điện thoại'
             })
         }
         const newComment= await modelComment.insertMany({
@@ -34,15 +28,9 @@ const UpdateComments= async(req,res)=>{
     try {
         const {_id}= req.params
         const {name,email,wish}= req.body
-        if(!name||!email||!wish||!_id){
+        if(!name||!wish||!_id){
             return res.status(300).json({
                 message:'Bạn vui lòng điền đầy đủ thông tin hoặc chưa có id'
-            })
-        }
-        const confirmEmail=await validate({email:email})
-        if(!confirmEmail){
-            return res.status(300).json({
-                message:'Bạn vui lòng điền đúng định dạng email'
             })
         }
         const update= await  modelComment.findByIdAndUpdate(_id,{name,email,wish},{new:true})

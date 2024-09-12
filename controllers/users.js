@@ -373,4 +373,27 @@ const SendEmailClient=async(req,res)=>{
         }
     });
 }
-module.exports={CreateUsers,UpdateUsers,DeleteUser,GetUsers,SendEmailClient}
+const GetUserDetail= async(req,res)=>{
+    try {
+        const {_id}=req.params
+        if(!_id){
+            return res.status(300).json({
+                message:"chua co id"
+            })
+        }
+        const detailUsers= await modelUsers.findById(_id)
+        if(!detailUsers){
+            return res.status(300).json({
+                message:"id chua dung"
+            })
+        }
+        return res.status(200).json({
+            data:detailUsers
+        })
+    } catch (error) {
+        return res.status(500).json({
+            message:error
+        })
+    }
+}
+module.exports={CreateUsers,UpdateUsers,DeleteUser,GetUsers,SendEmailClient,GetUserDetail}

@@ -7,4 +7,5 @@ router.post('/update/:_id',verifyToken,user.UpdateUsers)
 router.post('/sendEmail',verifyToken,user.SendEmailClient)
 router.delete('/delete/:_id',verifyToken,user.DeleteUser)
 router.get('/get',user.GetUsers)
+router.get('/detail/:_id',user.GetUserDetail)
 module.exports = router;

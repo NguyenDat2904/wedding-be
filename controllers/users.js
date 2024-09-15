@@ -48,7 +48,7 @@ const UpdateUsers= async(req,res)=>{
             numberOfPeople, desc,luckyMoney,
             isInvitation, relationship, commonName}= req.body
         if(!_id||!name||!phone||!email||!family||
-            !numberOfPeople,!luckyMoney||
+            
             !relationship|| !commonName){
             return res.status(300).json({
                 message:'Bạn vui lòng điền đầy đủ thông tin hoặc chưa có id'

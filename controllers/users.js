@@ -13,7 +13,7 @@ const CreateUsers=async(req,res)=>{
         }
         const newUser= await modelUsers.insertMany({
             name,
-            phone : '',
+            phone,
             email:'',
             family,
             isConfirm,

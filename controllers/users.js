@@ -11,6 +11,13 @@ const CreateUsers=async(req,res)=>{
                 message:'Bạn vui lòng điền đầy đủ thông tin'
             })
         }
+        const checkPhone= await checkEmailAndPhone({phone:phone})
+        if(!checkPhone)
+        {
+            return res.status(300).json({
+                message:' Số điện thoại đã tồn tại'
+            })
+        }
         const newUser= await modelUsers.insertMany({
             name,
             phone,

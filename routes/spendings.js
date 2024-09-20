@@ -5,6 +5,6 @@ const verifyToken=require('../middlewaves/authenMiddeware')
 router.post('/create',verifyToken,spending.CreateSpending)
 router.post('/update/:_id',verifyToken,spending.UpdateSpending)
 router.delete('/delete/:_id',verifyToken,spending.DeleteSpending)
-router.get('/get',verifyToken,spending.GetSpending)
+router.get('/get',spending.GetSpending)
 module.exports=router;
 

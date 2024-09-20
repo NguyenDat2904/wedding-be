@@ -63,7 +63,7 @@ const DeleteSpending= async(req,res)=>{
 }
 const GetSpending=async(req,res)=>{
     try {
-        const status =req.query.status
+
         const limit = req.query.limit || 25
         const skip = req.query.skip || 1
         const search=req.query.search||''
@@ -71,8 +71,8 @@ const GetSpending=async(req,res)=>{
             {$match:{
                 $or:[
                     {addSpending:{$regex:search,$options: 'i' }}
-                ],
-                ...( status !== undefined && {status:status})
+                 
+                ]
             }}
         ])
         const totalPage= Math.ceil(lengthSpending.length / limit)
@@ -80,8 +80,8 @@ const GetSpending=async(req,res)=>{
             {$match:{
                 $or:[
                     {addSpending:{$regex:search,$options: 'i' }}
-                ],
-                ...( status !== undefined && {status:status})
+                   
+                ]
             }},
             {$sort:{ createdAt: -1 }},
             { $skip: ((skip - 1) * limit) },

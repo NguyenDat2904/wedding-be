@@ -67,7 +67,12 @@ const GetComments= async(req,res)=>{
         const skipPage = parseInt(req.query.skip) || 1;
         const limitPage = parseInt(req.query.limit) || 25;
         const search = req.query.search || '';
-        const lengthUsers = await modelComment.find({})
+        const lengthUsers = await modelComment.aggregate([
+            { $match:{
+                  $or: [
+                 { name: { $regex: search,$options: 'i' } },],
+             }}
+     ])
         const totalPage = Math.ceil(lengthUsers.length / limitPage);
         const dataUser= await modelComment.aggregate([
            { $match:{
@@ -78,7 +83,7 @@ const GetComments= async(req,res)=>{
             { $skip: (skipPage - 1) * limitPage },
             { $limit: limitPage },
     ])
-        
+
         return res.status(200).json({
             data:dataUser,
             totalPage:totalPage

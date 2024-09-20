@@ -64,8 +64,8 @@ const DeleteSpending= async(req,res)=>{
 const GetSpending=async(req,res)=>{
     try {
 
-        const limit = req.query.limit || 25
-        const skip = req.query.skip || 1
+        const limit = parseInt(req.query.limit)|| 25
+        const skip =  parseInt(req.query.skip) || 1
         const search=req.query.search||''
         const lengthSpending= await  modelSpending.aggregate([
             {$match:{

@@ -112,6 +112,7 @@ const GetUsers= async(req,res)=>{
         const skipPage = parseInt(req.query.skip) || 1;
         const limitPage = parseInt(req.query.limit) || 25;
         const search = req.query.search || '';
+        const maxData=req.query.MaxData||""
         const lengthUsers = await modelUsers.aggregate([
             { $match:{
                   $or: [
@@ -131,8 +132,9 @@ const GetUsers= async(req,res)=>{
     ])
 
         return res.status(200).json({
-            data:dataUser,
-            totalPage:totalPage
+            data:maxData==="MaxData"?lengthUsers:dataUser,
+            totalPage:totalPage,
+            
         })
     } catch (error) {
         return res.status(500).json({

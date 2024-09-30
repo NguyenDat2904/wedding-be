@@ -67,6 +67,7 @@ const GetComments= async(req,res)=>{
         const skipPage = parseInt(req.query.skip) || 1;
         const limitPage = parseInt(req.query.limit) || 25;
         const search = req.query.search || '';
+        const maxData=req.query.MaxData||""
         const lengthUsers = await modelComment.aggregate([
             { $match:{
                   $or: [
@@ -85,7 +86,7 @@ const GetComments= async(req,res)=>{
     ])
 
         return res.status(200).json({
-            data:dataUser,
+            data:maxData==="MaxData"?lengthUsers:dataUser,
             totalPage:totalPage
         })
     } catch (error) {

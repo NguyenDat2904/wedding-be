@@ -67,6 +67,7 @@ const GetSpending=async(req,res)=>{
         const limit = parseInt(req.query.limit)|| 25
         const skip =  parseInt(req.query.skip) || 1
         const search=req.query.search||''
+          const maxData=req.query.MaxData||""
         const lengthSpending= await  modelSpending.aggregate([
             {$match:{
                 $or:[
@@ -88,8 +89,9 @@ const GetSpending=async(req,res)=>{
             { $limit: limit },
         ])
         return res.status(200).json({
-            data:dataSpending,
-            totalPage:totalPage
+            data:maxData==="MaxData"?lengthSpending:dataSpending,
+            totalPage:totalPage,
+            
         })
     } catch (error) {
         return res.status(500).json({
